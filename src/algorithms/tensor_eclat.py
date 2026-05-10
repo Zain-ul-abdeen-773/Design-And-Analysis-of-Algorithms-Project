@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 from typing import List, Tuple, Dict
-import time
 
 class TensorEclat:
     """
@@ -10,6 +9,9 @@ class TensorEclat:
     This implements a highly optimized vertical data format using Tensor operations 
     on PyTorch/CuPy, parallelizing support counting massively [cite: 41, 55, 59, 60].
     Memory-efficient bitsets (boolean tensors) eliminate repeat db scans[cite: 57].
+
+    The algorithm uses a Depth-First Search (DFS) strategy through equivalence
+    classes, performing support counting via GPU-parallel bitwise AND operations.
     """
     def __init__(self, min_support: float, device: str = 'cuda'):
         self.min_support = min_support
@@ -41,32 +43,48 @@ class TensorEclat:
             t_tensor[tids] = True
             self.tensor_db[item] = t_tensor
 
-        # Generate candidates using recursive Depth-First GPU search
-        k = 2
-        items = list(frequent_1.keys())
-        for i in range(len(items)):
-            for j in range(i + 1, len(items)):
-                self._mine_recursive((items[i],), self.tensor_db[items[i]], 
-                                     (items[j],), self.tensor_db[items[j]], min_sup_count)
+        # DFS mining through equivalence classes
+        items = sorted(frequent_1.keys())
+        suffix = [(item, self.tensor_db[item]) for item in items]
+
+        for i in range(len(suffix)):
+            item, tidset = suffix[i]
+            remaining = suffix[i + 1:]
+            self._eclat_dfs((item,), tidset, remaining, min_sup_count)
 
         return self.frequent_itemsets
 
-    def _mine_recursive(self, prefix: Tuple[int], p_tensor: torch.Tensor, 
-                        item: Tuple[int], i_tensor: torch.Tensor, min_sup_count: float):
-        self.candidate_count += 1
-        
-        # GPU Parallel Intersection (Bitwise AND)
-        new_tensor = torch.bitwise_and(p_tensor, i_tensor)
-        support = new_tensor.sum().item()
+    def _eclat_dfs(self, prefix: Tuple[int], prefix_tidset: torch.Tensor,
+                   suffix_items: List[Tuple[int, torch.Tensor]],
+                   min_sup_count: float):
+        """
+        Recursive Depth-First Search through equivalence classes.
 
-        if support >= min_sup_count:
-            new_itemset = tuple(sorted(prefix + item))
-            k = len(new_itemset)
-            
-            if k not in self.frequent_itemsets:
-                self.frequent_itemsets[k] = {}
-            self.frequent_itemsets[k][new_itemset] = support
-            
-            # Since Eclat is DFS, we'd normally pass the equivalence class to continue. 
-            # In a fully blown version, we intersect classes here.
-            # *Simplified implementation for core tensor operations showing GPU parallel count*
+        At each level, intersect the prefix tidset with each suffix item's tidset
+        using GPU-parallel bitwise AND. Frequent extensions form the new equivalence
+        class for deeper recursion.
+        """
+        new_frequent_pairs = []
+
+        for item, item_tidset in suffix_items:
+            self.candidate_count += 1
+
+            # GPU Parallel Intersection (Bitwise AND across CUDA cores)
+            new_tidset = torch.bitwise_and(prefix_tidset, item_tidset)
+            support = int(new_tidset.sum().item())
+
+            if support >= min_sup_count:
+                new_itemset = tuple(sorted(prefix + (item,)))
+                k = len(new_itemset)
+
+                if k not in self.frequent_itemsets:
+                    self.frequent_itemsets[k] = {}
+                self.frequent_itemsets[k][new_itemset] = support
+                new_frequent_pairs.append((item, new_tidset))
+
+        # Recurse deeper into equivalence classes
+        for i in range(len(new_frequent_pairs)):
+            item, tidset = new_frequent_pairs[i]
+            remaining = new_frequent_pairs[i + 1:]
+            if remaining:
+                self._eclat_dfs(prefix + (item,), tidset, remaining, min_sup_count)

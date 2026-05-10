@@ -16,20 +16,20 @@ if [ ! -f data/raw/connect.dat ]; then
     wget http://fimi.uantwerpen.be/data/connect.dat -O data/raw/connect.dat
 fi
 
-# Accident dataset (Commented to save time, switch on for production)
-# if [ ! -f data/raw/accidents.dat ]; then
-#    echo "Downloading Accidents dataset..."
-#    wget http://fimi.uantwerpen.be/data/accidents.dat -O data/raw/accidents.dat
-# fi
+# Accidents dataset
+if [ ! -f data/raw/accidents.dat ]; then
+    echo "Downloading Accidents dataset..."
+    wget http://fimi.uantwerpen.be/data/accidents.dat -O data/raw/accidents.dat
+fi
 
 echo "Datasets ready."
 echo "Activating benchmark suite..."
 
-# python scripts/benchmark.py
-# streamlit run scripts/dashboard.py
-
 echo "Starting automated benchmark..."
 python3 scripts/benchmark.py
+
+echo "Generating report figures..."
+python3 scripts/generate_plots.py
 
 echo "Launching dashboard (Check your browser)..."
 streamlit run scripts/dashboard.py

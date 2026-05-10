@@ -1,10 +1,12 @@
 import time
 import os
 import psutil
-from memory_profiler import memory_usage
+import numpy as np
 from src.algorithms.apriori import AprioriBaseline
 from src.algorithms.tensor_eclat import TensorEclat
 import pandas as pd
+
+NUM_RUNS = 3  # Project requirement: run each experiment >= 3 times and average
 
 def load_data(filepath, max_transactions=None):
     """Load transactions from FIMI dat format."""
@@ -19,70 +21,84 @@ def load_data(filepath, max_transactions=None):
                 break
             # Split by space and filter out empty strings
             transaction = [int(item) for item in line.strip().split() if item]
-            transactions.append(transaction)
+            if transaction:
+                transactions.append(transaction)
     return transactions
 
-def run_experiment(algorithm, data, min_support):
-    """Run an algorithm and capture metrics."""
-    # Capture start time and memory
+def run_single_experiment(algorithm_class, data, min_support, **kwargs):
+    """Run a single trial of an algorithm and capture metrics."""
     process = psutil.Process(os.getpid())
-    mem_before = process.memory_info().rss / (1024 ** 2) # MB
+    mem_before = process.memory_info().rss / (1024 ** 2)  # MB
+    
+    algo = algorithm_class(min_support=min_support, **kwargs)
+    
     start_time = time.time()
-    
-    # Run algorithm
-    frequent_itemsets = algorithm.fit(data)
-    
-    # Capture end time and memory
+    frequent_itemsets = algo.fit(data)
     end_time = time.time()
-    mem_after = process.memory_info().rss / (1024 ** 2) # MB
+    
+    mem_after = process.memory_info().rss / (1024 ** 2)  # MB
     
     exec_time = end_time - start_time
-    peak_mem = max(0, mem_after - mem_before)  # Approximate peak memory difference
+    peak_mem = max(0, mem_after - mem_before)
+    total_itemsets = sum(len(v) for v in frequent_itemsets.values())
+    candidates = algo.candidate_count
     
-    # Calculate total frequent itemsets
-    total_itemsets = sum(len(itemsets) for k, itemsets in frequent_itemsets.items())
-    candidates = algorithm.candidate_count
+    return exec_time, peak_mem, total_itemsets, candidates
+
+def run_experiment_averaged(algorithm_class, data, min_support, num_runs=NUM_RUNS, **kwargs):
+    """Run an algorithm NUM_RUNS times and return averaged metrics."""
+    times, mems, itemset_counts, cand_counts = [], [], [], []
+    
+    for run in range(num_runs):
+        t, m, items, cands = run_single_experiment(algorithm_class, data, min_support, **kwargs)
+        times.append(t)
+        mems.append(m)
+        itemset_counts.append(items)
+        cand_counts.append(cands)
     
     return {
-        'Execution Time (s)': exec_time,
-        'Memory Used (MB)': peak_mem,
-        'Frequent Itemsets': total_itemsets,
-        'Candidates Generated': candidates
+        'Execution Time (s)': round(np.mean(times), 4),
+        'Time Std Dev (s)': round(np.std(times), 4),
+        'Memory Used (MB)': round(np.mean(mems), 2),
+        'Frequent Itemsets': int(np.mean(itemset_counts)),
+        'Candidates Generated': int(np.mean(cand_counts)),
     }
 
 def main():
     datasets = {
         'Chess': 'data/raw/chess.dat',
-        'Connect': 'data/raw/connect.dat'
+        'Connect': 'data/raw/connect.dat',
+        'Accidents': 'data/raw/accidents.dat',
     }
     
-    supports = [0.6, 0.7, 0.8] # typical high supports for dense datasets
+    supports = [0.6, 0.7, 0.8, 0.9]  # Multiple thresholds for scalability curves
     results = []
 
-    print("Starting FIM Benchmarks...")
+    print(f"Starting FIM Benchmarks ({NUM_RUNS} runs per configuration)...")
     
     for ds_name, ds_path in datasets.items():
         print(f"\nLoading {ds_name}...")
-        data = load_data(ds_path, max_transactions=10000) # Limit for testing
+        data = load_data(ds_path)
         if not data:
             continue
+        print(f"  Loaded {len(data)} transactions.")
             
         for min_sup in supports:
             print(f"  Testing min_sup = {min_sup}")
             
             # 1. Baseline Apriori
-            print("    Running Apriori Baseline...")
-            apriori = AprioriBaseline(min_support=min_sup)
-            metrics_apr = run_experiment(apriori, data, min_sup)
+            print(f"    Running Apriori Baseline ({NUM_RUNS} runs)...")
+            metrics_apr = run_experiment_averaged(AprioriBaseline, data, min_sup)
             metrics_apr.update({'Dataset': ds_name, 'Min Support': min_sup, 'Algorithm': 'Apriori'})
             results.append(metrics_apr)
+            print(f"      -> {metrics_apr['Execution Time (s)']}s avg")
             
             # 2. SOTA GPU Tensor Eclat
-            print("    Running Tensor Eclat (GPU)...")
-            tensor_eclat = TensorEclat(min_support=min_sup)
-            metrics_eclat = run_experiment(tensor_eclat, data, min_sup)
+            print(f"    Running Tensor Eclat ({NUM_RUNS} runs)...")
+            metrics_eclat = run_experiment_averaged(TensorEclat, data, min_sup)
             metrics_eclat.update({'Dataset': ds_name, 'Min Support': min_sup, 'Algorithm': 'Tensor Eclat'})
             results.append(metrics_eclat)
+            print(f"      -> {metrics_eclat['Execution Time (s)']}s avg")
 
     df_results = pd.DataFrame(results)
     os.makedirs('data/processed', exist_ok=True)

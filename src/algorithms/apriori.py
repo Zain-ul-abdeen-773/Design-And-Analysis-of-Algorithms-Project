@@ -74,3 +74,38 @@ class AprioriBaseline:
             current_frequent = {c: sup for c, sup in new_frequent.items() if sup >= min_sup_count}
 
         return self.frequent_itemsets
+
+    def generate_rules(self, min_confidence: float = 0.7) -> List[Dict]:
+        """
+        Generate association rules from discovered frequent itemsets.
+
+        For each frequent itemset of size >= 2, generate all possible rules
+        X -> Y where X union Y = itemset, and check confidence threshold.
+        confidence(X -> Y) = support(X union Y) / support(X)
+        """
+        # Build flat lookup: itemset -> support_count
+        support_lookup = {}
+        for k, itemsets in self.frequent_itemsets.items():
+            for itemset, count in itemsets.items():
+                support_lookup[itemset] = count
+
+        rules = []
+        for k, itemsets in self.frequent_itemsets.items():
+            if k < 2:
+                continue
+            for itemset, sup_count in itemsets.items():
+                # Generate all non-empty proper subsets as antecedents
+                for i in range(1, len(itemset)):
+                    for antecedent in itertools.combinations(itemset, i):
+                        consequent = tuple(sorted(set(itemset) - set(antecedent)))
+                        ant_support = support_lookup.get(antecedent, 0)
+                        if ant_support > 0:
+                            confidence = sup_count / ant_support
+                            if confidence >= min_confidence:
+                                rules.append({
+                                    'antecedent': antecedent,
+                                    'consequent': consequent,
+                                    'support': sup_count / self.num_transactions,
+                                    'confidence': confidence,
+                                })
+        return rules
