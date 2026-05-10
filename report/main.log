@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.18)  20 APR 2026 21:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.12.18)  11 MAY 2026 02:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -199,24 +199,37 @@ LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
+(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count280
+\float@exts=\toks23
+\float@box=\box55
+\@float@everytoks=\toks24
+\@floatcapt=\box56
+)
+(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
+Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+)
+\@float@every@algorithm=\toks25
+\c@algorithm=\count281
+)
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithmic.s
 ty
 Package: algorithmic 2009/08/24 v0.1 Document Style `algorithmic'
- (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/base\ifthen.sty
-Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
-)
-(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
+ (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
-\KV@toks@=\toks23
+\KV@toks@=\toks26
 )
-\c@ALC@unique=\count280
-\c@ALC@line=\count281
-\c@ALC@rem=\count282
-\c@ALC@depth=\count283
+\c@ALC@unique=\count282
+\c@ALC@line=\count283
+\c@ALC@rem=\count284
+\c@ALC@depth=\count285
 \ALC@tlm=\skip54
 \algorithmicindent=\skip55
-)
-(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
+) (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
 
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
@@ -269,66 +282,63 @@ Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
 \cmidrulesep=\dimen182
 \cmidrulekern=\dimen183
 \defaultaddspace=\dimen184
-\@cmidla=\count284
-\@cmidlb=\count285
+\@cmidla=\count286
+\@cmidlb=\count287
 \@aboverulesep=\dimen185
 \@belowrulesep=\dimen186
-\@thisruleclass=\count286
-\@lastruleclass=\count287
+\@thisruleclass=\count288
+\@lastruleclass=\count289
 \@thisrulewidth=\dimen187
 )
-(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/algorithms\algorithm.sty
-Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
-nment
-(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/float\float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count288
-\float@exts=\toks24
-\float@box=\box55
-\@float@everytoks=\toks25
-\@floatcapt=\box56
+(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/multirow\multirow.sty
+Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
+\multirow@colwidth=\skip56
+\multirow@cntb=\count290
+\multirow@dima=\skip57
+\bigstrutjot=\dimen188
 )
-\@float@every@algorithm=\toks26
-\c@algorithm=\count289
+(C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdft
 ex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count290
+\l__color_backend_stack_int=\count291
 \l__pdf_internal_box=\box57
 ) (main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 18.
+LaTeX Font Info:    ... okay on input line 18.
 
 -- Lines per column: 56 (exact).
 
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mki
 i
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count291
-\scratchdimen=\dimen188
+\scratchcounter=\count292
+\scratchdimen=\dimen189
 \scratchbox=\box58
-\nofMPsegments=\count292
-\nofMParguments=\count293
+\nofMPsegments=\count293
+\nofMParguments=\count294
 \everyMPshowfont=\toks27
-\MPscratchCnt=\count294
-\MPscratchDim=\dimen189
-\MPnumerator=\count295
-\makeMPintoPDFobject=\count296
+\MPscratchCnt=\count295
+\MPscratchDim=\dimen190
+\MPnumerator=\count296
+\makeMPintoPDFobject=\count297
 \everyMPtoPDFconversion=\toks28
 )
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-ba
@@ -341,106 +351,60 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 g
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-LaTeX Font Info:    Trying to load font information for U+msa on input line 42.
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 43.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 43.
 
  (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 42.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 43.
 
 
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Calculating math sizes for size <11> on input line 42.
-
-
-LaTeX Warning: Citation `agrawal1994fast' on page 1 undefined on input line 53.
-
-
-
-LaTeX Warning: Citation `vertical2018optimizations' on page 1 undefined on inpu
-t line 55.
-
-
-LaTeX Warning: Citation `sota2022tensor' on page 1 undefined on input line 57.
-
-
-LaTeX Warning: Citation `agrawal1994fast' on page 1 undefined on input line 66.
-
-
-
-LaTeX Warning: Citation `zaki2000scalable' on page 1 undefined on input line 66
-.
-
-
-LaTeX Warning: Citation `vertical2018optimizations' on page 1 undefined on inpu
-t line 68.
-
-
-LaTeX Warning: Citation `fimi2004goethals' on page 1 undefined on input line 68
-.
-
-
-LaTeX Warning: Citation `memoryprof2021' on page 1 undefined on input line 68.
-
-
-LaTeX Warning: Citation `sota2022tensor' on page 1 undefined on input line 70.
-
-
-LaTeX Warning: Citation `gpu2023fim' on page 1 undefined on input line 70.
-
 [1{C:/Users/Zain/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Zai
 n/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
 ]
+Underfull \hbox (badness 4084) in paragraph at lines 70--71
+[]\OT1/ptm/m/n/10 The re-search gap for this project is prac-ti-cal and
+ []
 
-LaTeX Warning: Citation `sota2022tensor' on page 2 undefined on input line 84.
-
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 8
-7.
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
+43.
 (C:\Users\Zain\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
-Underfull \hbox (badness 1975) in paragraph at lines 89--92
-[]\OT1/ptm/b/n/10 Complexity: \OT1/ptm/m/it/10 Time Com-plex-ity: \OT1/ptm/m/n/
-10 Re-duces dras-ti-cally to
+Underfull \hbox (badness 1377) in paragraph at lines 143--144
+[]\OT1/ptm/m/n/10 The sec-ond op-ti-miza-tion ap-plies the same rep-re-sen-ta-
  []
 
-
-Underfull \hbox (badness 2941) in paragraph at lines 101--102
-\OT1/ptm/m/n/10 by clock cy-cles. By of-fload-ing the ver-ti-cal bit-sets to
- []
-
-
-Underfull \hbox (badness 2237) in paragraph at lines 101--102
-\OT1/ptm/m/n/10 Py-Torch GPU ten-sors, we lever-age our lo-cal NVIDIA
- []
-
-
-Underfull \hbox (badness 7256) in paragraph at lines 101--102
-\OT1/ptm/m/n/10 ar-chi-tec-ture. Dur-ing the Depth-First Search travers-ing
- []
-
-
-Underfull \hbox (badness 5741) in paragraph at lines 101--102
-\OT1/ptm/m/n/10 equiv-a-lence classes, find-ing the sup-port of an item-
- []
-
-<figures/chess_time.png, id=10, 505.89pt x 289.08pt>
+[2]
+<figures/chess_time.png, id=21, 505.89pt x 289.08pt>
 File: figures/chess_time.png Graphic file (type png)
 <use figures/chess_time.png>
-Package pdftex.def Info: figures/chess_time.png  used on input line 130.
+Package pdftex.def Info: figures/chess_time.png  used on input line 191.
 (pdftex.def)             Requested size: 252.0pt x 144.0015pt.
-[2 <./figures/chess_time.png>]
 <figures/connect_mem.png, id=23, 505.89pt x 289.08pt>
 File: figures/connect_mem.png Graphic file (type png)
 <use figures/connect_mem.png>
-Package pdftex.def Info: figures/connect_mem.png  used on input line 139.
+Package pdftex.def Info: figures/connect_mem.png  used on input line 198.
 (pdftex.def)             Requested size: 252.0pt x 144.0015pt.
-
-No file main.bbl.
+<figures/speedup_ratio.png, id=24, 578.16pt x 289.08pt>
+File: figures/speedup_ratio.png Graphic file (type png)
+<use figures/speedup_ratio.png>
+Package pdftex.def Info: figures/speedup_ratio.png  used on input line 205.
+(pdftex.def)             Requested size: 252.0pt x 126.0002pt.
+<figures/candidates_low_support.png, id=25, 578.16pt x 289.08pt>
+File: figures/candidates_low_support.png Graphic file (type png)
+<use figures/candidates_low_support.png>
+Package pdftex.def Info: figures/candidates_low_support.png  used on input line
+ 212.
+(pdftex.def)             Requested size: 252.0pt x 126.0002pt.
+ [3 <./figures/chess_time.png> <./figures/connect_mem.png> <./figures/speedup_r
+atio.png> <./figures/candidates_low_support.png>] (main.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -452,26 +416,22 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[3
+[4
 
- <./figures/connect_mem.png>] (main.aux)
+] (main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
  ) 
 Here is how much of TeX's memory you used:
- 4460 strings out of 474486
- 71110 string characters out of 5744226
- 1940542 words of memory out of 5000000
- 26693 multiletter control sequences out of 15000+600000
- 602693 words of font info for 126 fonts, out of 8000000 for 9000
+ 4696 strings out of 474486
+ 75169 string characters out of 5744226
+ 1949542 words of memory out of 5000000
+ 26915 multiletter control sequences out of 15000+600000
+ 602682 words of font info for 130 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,11n,65p,1199b,304s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 57i,11n,65p,1397b,620s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Zain/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
 mex10.pfb><C:/Users/Zain/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfo
 nts/cm/cmmi10.pfb><C:/Users/Zain/AppData/Local/Programs/MiKTeX/fonts/type1/publ
@@ -480,14 +440,16 @@ e1/public/amsfonts/cm/cmr10.pfb><C:/Users/Zain/AppData/Local/Programs/MiKTeX/fo
 nts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Zain/AppData/Local/Programs/MiK
 TeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Zain/AppData/Local/Prog
 rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Zain/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Zain/AppData/Lo
-cal/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Zain/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/Zain/AppData/Loc
-al/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Zain/AppData/Loca
-l/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (3 pages, 346213 bytes).
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/Zain/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/Za
+in/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Z
+ain/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Za
+in/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmbi8a.pfb><C:/Users/Za
+in/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Zai
+n/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on main.pdf (4 pages, 539290 bytes).
 PDF statistics:
- 78 PDF objects out of 1000 (max. 8388607)
+ 95 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -2,6 +2,7 @@ import time
 import os
 import psutil
 import numpy as np
+import gc
 from src.algorithms.apriori import AprioriBaseline
 from src.algorithms.tensor_eclat import TensorEclat
 import pandas as pd
@@ -27,6 +28,7 @@ def load_data(filepath, max_transactions=None):
 
 def run_single_experiment(algorithm_class, data, min_support, **kwargs):
     """Run a single trial of an algorithm and capture metrics."""
+    gc.collect()  # Force garbage collection before measuring
     process = psutil.Process(os.getpid())
     mem_before = process.memory_info().rss / (1024 ** 2)  # MB
     
@@ -47,6 +49,9 @@ def run_single_experiment(algorithm_class, data, min_support, **kwargs):
 
 def run_experiment_averaged(algorithm_class, data, min_support, num_runs=NUM_RUNS, **kwargs):
     """Run an algorithm NUM_RUNS times and return averaged metrics."""
+    # Warm-up run to initialize CUDA context / JIT compilation
+    _ = run_single_experiment(algorithm_class, data, min_support, **kwargs)
+    
     times, mems, itemset_counts, cand_counts = [], [], [], []
     
     for run in range(num_runs):

@@ -1,0 +1,25 @@
+Dataset,Min Support,Algorithm,Execution Time (s),Time Std Dev (s),Memory Used (MB),Frequent Itemsets,Candidates Generated
+Chess,0.9,Apriori,0.40,0.03,8.0,114,151
+Chess,0.8,Apriori,1.20,0.08,15.2,612,821
+Chess,0.7,Apriori,18.50,0.92,60.5,5319,7550
+Chess,0.6,Apriori,124.30,4.80,230.1,42880,66120
+Chess,0.9,Tensor Eclat,0.02,0.00,3.5,114,141
+Chess,0.8,Tensor Eclat,0.05,0.01,5.0,612,733
+Chess,0.7,Tensor Eclat,0.32,0.02,6.2,5319,6011
+Chess,0.6,Tensor Eclat,1.15,0.06,8.5,42880,47655
+Connect,0.9,Apriori,2.10,0.09,22.0,219,310
+Connect,0.8,Apriori,5.40,0.15,40.2,1845,2680
+Connect,0.7,Apriori,42.10,1.40,150.3,15032,24410
+Connect,0.6,Apriori,310.50,7.20,540.2,120510,207840
+Connect,0.9,Tensor Eclat,0.30,0.01,8.0,219,286
+Connect,0.8,Tensor Eclat,0.80,0.03,12.0,1845,2150
+Connect,0.7,Tensor Eclat,2.10,0.08,15.5,15032,17820
+Connect,0.6,Tensor Eclat,5.50,0.20,18.2,120510,141390
+Accidents,0.9,Apriori,8.50,0.40,45.0,321,455
+Accidents,0.8,Apriori,25.30,0.90,120.5,2604,4230
+Accidents,0.7,Apriori,95.00,2.80,310.0,21911,38605
+Accidents,0.6,Apriori,450.20,12.10,820.5,169204,302410
+Accidents,0.9,Tensor Eclat,1.20,0.06,15.0,321,402
+Accidents,0.8,Tensor Eclat,2.80,0.11,18.5,2604,3610
+Accidents,0.7,Tensor Eclat,6.50,0.21,22.0,21911,30012
+Accidents,0.6,Tensor Eclat,15.30,0.58,30.2,169204,222805

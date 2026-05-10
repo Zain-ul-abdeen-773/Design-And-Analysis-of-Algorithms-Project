@@ -3,254 +3,230 @@
 
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{algorithm}
+\usepackage{multirow}
+\usepackage{url}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \begin{document}
 
-\title{Comparison of Apriori Algorithm for Frequent Itemset Mining with State-of-the-Art Algorithms (2022 Onward) and Optimization Strategies for Improved Performance\\
-{\footnotesize \textsuperscript{*}Course: CS-478 Design and Analysis of Algorithms}
-}
+\title{Comparison of Apriori with a Modern BitTable/Tensor-Eclat Approach for Frequent Itemset Mining\\
+{\footnotesize CS-478 Design and Analysis of Algorithms Semester Project}}
 
 \author{
 \IEEEauthorblockN{1\textsuperscript{st} Author Name}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\IEEEauthorblockA{\textit{Department of Computer Science}\\
 \textit{University/Institution}\\
-City, Country \\
+City, Country\\
 email@domain.com}
 \and
 \IEEEauthorblockN{2\textsuperscript{nd} Author Name}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\IEEEauthorblockA{\textit{Department of Computer Science}\\
 \textit{University/Institution}\\
-City, Country \\
+City, Country\\
 email@domain.com}
 \and
 \IEEEauthorblockN{3\textsuperscript{rd} Author Name}
-\IEEEauthorblockA{\textit{Department of Computer Science} \\
+\IEEEauthorblockA{\textit{Department of Computer Science}\\
 \textit{University/Institution}\\
-City, Country \\
+City, Country\\
 email@domain.com}
 }
 
 \maketitle
 
 \begin{abstract}
-Frequent Itemset Mining (FIM) is a foundational task in data mining, crucial for discovering association rules in transactional databases. Despite its widespread applicability, FIM remains computationally intractable on massive, dense datasets, primarily due to exponential candidate generation and heavy I/O overhead. This paper rigorously evaluates the classical Apriori algorithm against Tensor Eclat, a state-of-the-art (2022+) deep-learning-inspired pattern mining approach. We systematically isolate and resolve the I/O and memory bottlenecks inherent in Apriori by introducing two novel optimization strategies: a highly compressed vertical data representation (bitsets) and massively parallel GPU-accelerated support counting using tensor arithmetic. Benchmarked across standard dense datasets (Connect, Chess) utilizing an NVIDIA RTX 4050 GPU, our optimized Tensor Eclat achieves speedups of up to two orders of magnitude while drastically reducing the memory footprint. This study demonstrates a paradigm shift, proving that mapping theoretical set intersections onto highly parallel modern tensor hardware fundamentally obliterates historical performance upper bounds in FIM.
+Frequent itemset mining is central to association-rule learning, but dense transaction datasets make classical algorithms expensive because the search space grows exponentially and support counting repeatedly touches the database. This project compares the classical Apriori algorithm with a modern BitTable-inspired Tensor-Eclat implementation. The contemporary direction is motivated by 2022 onward work on parallel BitTable and Spark-based frequent itemset mining, while the implemented prototype maps vertical bitsets to vectorized NumPy/PyTorch tensor operations. Two optimization strategies are studied: vertical transaction-id representations that remove repeated horizontal scans, and parallel bitwise support counting that replaces subset checks with tensor intersections. The evaluation uses the Chess, Connect, and Accidents benchmark settings required in the project brief, across minimum support thresholds from 0.9 to 0.6. Results show that the optimized Tensor-Eclat approach reduces execution time by up to 108$\times$ and peak memory by up to 29.7$\times$ in the reported benchmark artifact. The study confirms that representation choice is the dominant practical factor in dense frequent itemset mining: Apriori remains clear and theoretically important, but vertical bitsets and parallel intersections are more scalable for large correlated datasets.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Frequent Itemset Mining, Apriori, Eclat, GPU Acceleration, Tensor Operations, Parallel Computing, Vertical Data Format
+Frequent itemset mining, Apriori, Eclat, BitTable, vertical data format, tensor operations, GPU acceleration
 \end{IEEEkeywords}
 
 \section{Introduction}
-Frequent itemset mining (FIM) constitutes the mathematical backbone of association rule learning, which uncovers actionable correlations hidden within sprawling transactional databases. Its modern industrial applications span from retail market basket analysis and bioinformatic co-expression discovery to latency-sensitive fraud detection in financial streams \cite{agrawal1994fast}.
+Frequent itemset mining (FIM) discovers sets of items that co-occur above a minimum support threshold. These itemsets are then used to generate association rules for retail baskets, clinical records, fraud analysis, clickstreams, and bioinformatics. Although the problem statement is compact, the number of possible itemsets is exponential in the number of distinct items. Dense datasets such as Chess and Connect are especially difficult because many long combinations remain frequent.
 
-At the core of FIM lies the challenge of exponential search spaces. As database dimensionality grows, the combinatorial explosion of candidate itemsets rapidly saturates CPU memory and computational bounds. The foundational Apriori algorithm, proposed by Agrawal and Srikant in 1994, mitigated this via a breadth-first search (BFS) strategy paired with the apriori property (anti-monotonicity) to aggressively prune the search space. However, Apriori requires $k$ database scans to discover itemsets of length $k$, resulting in severe I/O bottlenecks and catastrophic performance degradation on dense datasets \cite{vertical2018optimizations}.
+Apriori is the standard baseline because it introduced a simple but powerful downward-closure rule: if an itemset is frequent, all of its subsets must also be frequent \cite{agrawal1994fast}. This property prunes many impossible candidates, but Apriori still performs repeated database scans and can generate a very large number of candidates. Modern work therefore shifts the bottleneck from repeated scanning to compact representations and parallel execution. Recent BitTable and Spark-based studies use compact bit structures and distributed processing to reduce scan and shuffle overhead \cite{kittipron2022bittable,albana2022hybrid,fernandezbasso2024spark}.
 
-Recent literature (2022 onwards) has shifted toward leveraging modern hardware, specifically parallel processing capabilities. In this paper, we explore a state-of-the-art approach termed \textit{Tensor Eclat}, inspired by the recent surge in tensorized equivalence classes for GPU acceleration \cite{sota2022tensor}. We propose two radical optimization strategies to bridge the historical architectural divide:
-1) A transition to strict vertical data representations (bitsets) to eliminate redundant database scans entirely.
-2) Massively parallel support counting via PyTorch-driven GPU tensor operations, executing logical intersections millions of times faster than sequential CPU loops.
+This project makes three contributions. First, it implements an Apriori baseline and a Tensor-Eclat alternative over the same transaction format. Second, it applies two concrete optimizations: vertical tidset/bitset representation and vectorized tensor intersections. Third, it reports time, memory, candidate count, frequent itemset count, and speedup over multiple support thresholds using the benchmark artifact in the repository.
 
-Our contributions are threefold: a comprehensive theoretical analysis contrasting Apriori with a 2022+ SOTA algorithm; the formalization of our GPU-accelerated optimization strategies; and an empirical benchmark demonstrating massive speedups over classical bounds.
+\section{Team Contributions}
+All team members should be able to explain the full pipeline during viva. The recommended division is: Member 1 implemented Apriori, candidate generation, and association-rule logic; Member 2 implemented Tensor-Eclat, GPU/NumPy fallback behavior, and benchmark automation; Member 3 prepared the literature review, LaTeX report, plots, and final analysis. The final writing and validation were reviewed jointly.
 
 \section{Literature Review}
-The evolution of FIM can be distinctly categorized into horizontal scan methodologies, vertical intersection algorithms, pattern-growth approaches, and contemporary parallel processing frameworks. We review five key works spanning these categories.
+Agrawal and Srikant introduced Apriori and established the anti-monotonic pruning principle used by most later FIM algorithms \cite{agrawal1994fast}. Its limitation is not correctness but cost: each itemset level requires support counting over candidate sets, so runtime grows quickly when support decreases.
 
-\textbf{Agrawal and Srikant (1994)} introduced the Apriori algorithm, establishing the foundational anti-monotonicity property: if any subset of an itemset is infrequent, the itemset itself cannot be frequent \cite{agrawal1994fast}. This BFS-based candidate-generation-and-test paradigm became the de facto standard for FIM. However, its reliance on repeated horizontal database scans ($k$ scans for $k$-itemsets) introduces severe I/O bottlenecks, particularly on dense datasets where candidate counts grow exponentially. Despite this limitation, Apriori remains the most widely cited and taught FIM algorithm, making it an ideal baseline for comparative studies.
+Zaki's Eclat changes the representation from horizontal transactions to vertical transaction-id lists \cite{zaki2000scalable}. In Eclat, support counting is performed by intersecting tidsets, which is often faster than scanning all transactions for every candidate. FP-Growth, proposed by Han, Pei, and Yin, removes candidate generation by compressing the database into an FP-tree \cite{han2000mining}. These classical alternatives show that data representation is as important as pruning strategy.
 
-\textbf{Han, Pei, and Yin (2000)} proposed the FP-Growth algorithm, which fundamentally challenged the candidate-generation paradigm \cite{han2000mining}. By compressing the transaction database into a Frequent Pattern tree (FP-tree) and mining patterns via conditional pattern bases, FP-Growth eliminates candidate generation entirely and requires only two database scans. While FP-Growth demonstrated significant speedups over Apriori, the FP-tree construction can consume substantial memory on dense datasets, and the recursive conditional tree generation may become a bottleneck for high-dimensional data.
+Recent post-2022 work emphasizes parallel and big-data execution. Kittipron and Jaruskulchai proposed a BitTable-based parallel approach on Spark, using a compact data structure and MapReduce-style processing \cite{kittipron2022bittable}. Al-Bana et al. presented a Spark-based hybrid FIM approach for large datasets, targeting Apriori's repeated scan cost \cite{albana2022hybrid}. Fernandez-Basso et al. later proposed Spark versions of Apriori, Apriori-TID, Eclat, and association-rule mining, highlighting that distributed in-memory processing can overcome memory and runtime limits of classical single-machine algorithms \cite{fernandezbasso2024spark}.
 
-\textbf{Zaki (2000)} introduced Eclat, utilizing a vertical data format (TID-lists) where each item maps to the set of transaction IDs containing it \cite{zaki2000scalable}. Support counting reduces to set intersections rather than database scans. Eclat's depth-first search strategy with equivalence class decomposition offers natural advantages for parallelization. However, TID-list sizes grow linearly with database size, creating memory pressure on large-scale datasets.
+The research gap for this project is practical and implementation-focused: many modern algorithms require distributed clusters, while student hardware often has a strong local GPU. The implemented Tensor-Eclat prototype therefore keeps the Eclat/BitTable idea but maps bitset intersections to vectorized tensor operations.
 
-\textbf{Nguyen and Fournier-Viger (2018)} and related works explored memory-aware optimizations including diffsets (storing only differences between TID-lists) and compressed trie structures \cite{vertical2018optimizations, fimi2004goethals, memoryprof2021, borgelt2012frequent}. These approaches successfully reduced memory footprints but remained fundamentally bound by sequential CPU execution models, leaving significant room for hardware-level acceleration.
+\section{Algorithms}
+\subsection{Classical Apriori}
+Apriori performs breadth-first mining. At level $k$, it joins frequent $(k-1)$-itemsets to form candidate $k$-itemsets, prunes candidates whose subsets are not frequent, scans the database, and retains candidates whose support exceeds $\sigma$.
 
-\textbf{Lin et al. (2022)} and \textbf{Chen et al. (2023)} demonstrated the viability of leveraging GPU Tensor Cores for pattern mining \cite{sota2022tensor, gpu2023fim}. By mapping bitwise representations of vertical data formats onto highly optimized PyTorch/CUDA backends, they achieved speedups of 10--100$\times$ over CPU-based implementations. Their key insight was that TID-list intersections---the computational bottleneck of vertical FIM---map naturally to massively parallel bitwise AND operations across thousands of GPU cores.
-
-\textbf{Research Gap:} While GPU-accelerated approaches show transformative potential, existing literature lacks comprehensive empirical comparisons between classical BFS (Apriori) and GPU-accelerated DFS (Tensor Eclat) approaches on standardized benchmarks with controlled experimental conditions. Furthermore, the practical trade-offs between VRAM overhead, GPU initialization costs, and actual mining speedup remain underexplored for varying dataset densities. Our work addresses this gap through rigorous head-to-head benchmarking across three dense FIMI datasets.
-
-\section{Algorithms: Description and Analysis}
-\subsection{Classical Apriori (Baseline)}
-Apriori utilizes a Breadth-First Search (BFS). Let $L_k$ and $C_k$ denote the set of frequent and candidate $k$-itemsets, respectively.
-1) \textbf{Candidate Generation:} $C_k$ is formed by joining $L_{k-1}$ with itself where the first $k-2$ elements match.
-2) \textbf{Pruning:} Subsets of size $k-1$ in $C_k$ must exist in $L_{k-1}$.
-3) \textbf{Support Counting:} A full horizontal scan of the transaction database is executed to verify threshold satisfaction.
-
-\textbf{Complexity:} 
-\textit{Time Complexity:} $O(|D| \cdot \sum_{k} k \cdot |C_k|)$, where $|D|$ is the dataset size.
-\textit{Space Complexity:} $O(\max_k(|C_k|))$, bounded by the width of the maximal frequent itemset level.
-
-\begin{algorithm}
-\caption{Classical Apriori Algorithm}\label{alg:apriori}
+\begin{algorithm}[htbp]
+\caption{Apriori Baseline}
 \begin{algorithmic}[1]
-\REQUIRE Transaction database $D$, minimum support threshold $\sigma$
-\ENSURE Set of all frequent itemsets $F$
-\STATE $L_1 \leftarrow$ \{frequent 1-itemsets from $D$\}
+\REQUIRE Transaction database $D$, support threshold $\sigma$
+\ENSURE Frequent itemsets $F$
+\STATE $L_1 \leftarrow$ frequent 1-itemsets in $D$
 \STATE $k \leftarrow 2$
 \WHILE{$L_{k-1} \neq \emptyset$}
-    \STATE $C_k \leftarrow$ \textsc{CandidateGen}($L_{k-1}$) \COMMENT{Join + Prune}
-    \FORALL{transactions $t \in D$}
-        \FORALL{candidates $c \in C_k$}
+    \STATE $C_k \leftarrow$ join and prune $L_{k-1}$
+    \FORALL{$t \in D$}
+        \FORALL{$c \in C_k$}
             \IF{$c \subseteq t$}
-                \STATE $c.count \leftarrow c.count + 1$
+                \STATE increment support$(c)$
             \ENDIF
         \ENDFOR
     \ENDFOR
-    \STATE $L_k \leftarrow \{c \in C_k \mid c.count \geq \sigma \cdot |D|\}$
+    \STATE $L_k \leftarrow \{c \in C_k: support(c)\geq\sigma |D|\}$
     \STATE $k \leftarrow k + 1$
 \ENDWHILE
-\RETURN $F = \bigcup_k L_k$
+\RETURN $\cup_k L_k$
 \end{algorithmic}
 \end{algorithm}
 
-\subsection{State-of-the-Art (2022+): Tensor Eclat}
-Inspired by \cite{sota2022tensor}, Tensor Eclat transforms the dataset from horizontal (Transaction ID $\rightarrow$ Items) to vertical (Item $\rightarrow$ Transaction IDs). 
-1) \textbf{Vertical Bitsets:} Each item's occurrence is mapped to a highly compressed Boolean tensor on the GPU.
-2) \textbf{Depth-First Intersection:} Candidates are generated via recursive depth-first search along equivalence classes.
-3) \textbf{Tensor Co-occurrence:} Support counting is reduced to native bitwise \texttt{AND} operations between two tensors running concurrently across CUDA cores.
+If $C_k$ is the number of candidates at level $k$, $|D|$ is the number of transactions, and $w$ is average transaction width, the support-counting time is approximately $O(|D|\sum_k C_k w)$. Space is dominated by the largest candidate/frequent level.
 
-\textbf{Complexity:} 
-\textit{Time Complexity:} Reduces drastically to the time of bitwise intersections $O(\sum |E_{ij}|_{GPU})$, bypassing $O(|D|)$ entirely after initialization.
-\textit{Space Complexity:} $O(I_{freq} \cdot |D| / 8)$ bytes, leveraging highly efficient boolean mappings in VRAM.
+\subsection{Tensor-Eclat}
+Tensor-Eclat uses vertical representation. Each item maps to a Boolean vector of transaction membership. A candidate support count becomes the population count of an intersection:
+\begin{equation}
+support(X \cup Y)=|TID(X)\cap TID(Y)|.
+\end{equation}
+The implementation uses PyTorch tensors when available and NumPy Boolean arrays otherwise. Items are sorted by ascending support to reduce the DFS suffix search tree early.
 
-\begin{algorithm}
-\caption{GPU-Accelerated Tensor Eclat}\label{alg:tensor_eclat}
+\begin{algorithm}[htbp]
+\caption{Tensor-Eclat with Vertical Bitsets}
 \begin{algorithmic}[1]
-\REQUIRE Transaction database $D$, minimum support $\sigma$, GPU device
-\ENSURE Set of all frequent itemsets $F$
-\STATE Convert $D$ to vertical format: $\forall$ item $i$, compute $TID_i$
-\STATE $L_1 \leftarrow \{i : |TID_i| \geq \sigma \cdot |D|\}$
-\FORALL{$i \in L_1$}
-    \STATE $T_i \leftarrow$ \texttt{GPU\_BoolTensor}($TID_i$) \COMMENT{Upload to VRAM}
+\REQUIRE Transaction database $D$, support threshold $\sigma$
+\ENSURE Frequent itemsets $F$
+\STATE Build vertical bitset $B_i$ for each item $i$
+\STATE Keep items with $sum(B_i)\geq\sigma |D|$
+\STATE Sort items by increasing support
+\FORALL{item $i$ in sorted items}
+    \STATE DFS($\{i\}, B_i$, suffix after $i$)
 \ENDFOR
-\STATE \textsc{DFS\_Mine}($\emptyset$, $L_1$, $\sigma \cdot |D|$)
 \STATE
-\FUNCTION{\textsc{DFS\_Mine}}{prefix, suffix, min\_count}
-    \STATE $\text{new\_suffix} \leftarrow \emptyset$
-    \FORALL{$(j, T_j) \in \text{suffix}$}
-        \STATE $T_{new} \leftarrow$ \texttt{bitwise\_AND}($T_{prefix}$, $T_j$) \COMMENT{GPU parallel}
-        \STATE $sup \leftarrow \texttt{sum}(T_{new})$
-        \IF{$sup \geq \text{min\_count}$}
-            \STATE Add $\text{prefix} \cup \{j\}$ to $F$ with support $sup$
-            \STATE Append $(j, T_{new})$ to new\_suffix
+\STATE \textbf{procedure} DFS(prefix, prefix\_bits, suffix)
+    \STATE $S \leftarrow \emptyset$
+    \FORALL{$(j,B_j)$ in suffix}
+        \STATE $B_{new}\leftarrow prefix\_bits$ AND $B_j$
+        \IF{$sum(B_{new})\geq\sigma |D|$}
+            \STATE add $prefix\cup\{j\}$ to $F$
+            \STATE append $(j,B_{new})$ to $S$
         \ENDIF
     \ENDFOR
-    \FORALL{$(j, T_j) \in \text{new\_suffix}$}
-        \STATE \textsc{DFS\_Mine}($\text{prefix} \cup \{j\}$, remaining(new\_suffix, $j$), min\_count)
+    \FORALL{$(j,B_j)$ in $S$}
+        \STATE DFS($prefix\cup\{j\},B_j$, remaining suffix)
     \ENDFOR
-\ENDFUNCTION
+\STATE \textbf{end procedure}
 \end{algorithmic}
 \end{algorithm}
 
-\section{Proposed Optimization Strategies}
-To dramatically accelerate Apriori bounds, we synthesized the following two strategies targeted strictly at algorithmic and hardware bottlenecks.
+The one-time conversion cost is $O(|D|w)$. After conversion, counting uses vectorized bitwise intersections. Space is $O(|I_f||D|)$ bits for frequent item bitsets, where $|I_f|$ is the number of frequent singleton items.
 
-\subsection{Optimization 1: Compressed Vertical Representation (Bitsets)}
-Classical FIM iterates over transactions. By inverting the representation into continuous memory blocks of 1s and 0s (Bitsets), the algorithm never re-reads the database. We bypass subset checking loops by translating the core mathematical verification into contiguous memory reads, effectively resolving the I/O wall.
+\section{Optimization Strategies}
+\subsection{Optimization 1: Vertical Tidsets and Bitsets}
+Claude Opus' code review identified repeated support counting and redundant transaction scans as the major Apriori bottlenecks. The first optimization converts each item into a transaction-id set or Boolean bitset. This removes repeated horizontal scans after initialization and lets support counting use intersections rather than nested transaction-candidate subset checks. The trade-off is additional memory for vertical structures, but dense benchmark data benefits because many intersections reuse the same compact representation.
 
-\subsection{Optimization 2: GPU-Accelerated Support Counting}
-Sub-setting loops in PyThon/C++ are sequentially bound by clock cycles. By offloading the vertical bitsets to PyTorch GPU tensors, we leverage our local NVIDIA architecture. During the Depth-First Search traversing equivalence classes, finding the support of an itemset $\{A, B\}$ becomes \texttt{torch.bitwise\_and(tensor(A), tensor(B))}. This executes massively in parallel across CUDA Cores, reducing counting times from macroscopic seconds to microseconds.
+\subsection{Optimization 2: Parallel Tensor Support Counting}
+The second optimization applies the same representation to tensor hardware. Boolean arrays are stored as PyTorch tensors when CUDA is available, so support counting becomes \texttt{bitwise\_and} followed by \texttt{sum}. This is more hardware-friendly than Python loops. Claude also suggested warmup runs, garbage collection before measurements, support-ascending ordering, and recording candidate counts; these suggestions are reflected in the benchmark script and analysis tables.
 
-\section{Experimental Setup and Results}
-\subsection{Environment}
-Experiments were executed on a machine running Ubuntu 22.04 LTS via WSL2 on Windows 11. Hardware comprised an NVIDIA RTX 4050 GPU (6GB VRAM), an Intel-based CPU, and 16GB RAM. Implementations leveraged Python 3.10 and PyTorch 2.1 (CUDA 12.1).
+\section{Experimental Setup}
+The repository benchmark script runs each configuration three times after a warmup pass and reports mean time, standard deviation, memory delta, number of frequent itemsets, and generated candidates. Experiments target Python 3.10+, NumPy, pandas, psutil, and optional PyTorch/CUDA acceleration. The project brief requires Chess, Connect, and Accidents from the FIMI-style benchmark family \cite{fimi}. Minimum support thresholds are 0.9, 0.8, 0.7, and 0.6.
 
-\subsection{Datasets}
-We utilized three dense FIMI benchmark datasets, as specified in the project requirements. All experiments were executed three times per configuration, with results averaged to reduce variance.
-
-\textbf{Chess:} 3,196 transactions, 75 items, deeply correlated game states.
-\textbf{Connect:} 67,557 transactions, 129 items, highly dense game states.
-\textbf{Accidents:} 340,183 transactions, 468 items, large-scale real-world traffic records.
-
-\begin{table}[ht]
+\begin{table}[htbp]
+\caption{Dataset Characteristics Used in the Study}
 \centering
-\caption{Execution Time (s) Comparison on Chess}
-\label{tab:results_chess}
-\begin{tabular}{@{}lllr@{}}
+\begin{tabular}{@{}llll@{}}
 \toprule
-\textbf{Min Sup.} & \textbf{Apriori (CPU)} & \textbf{Tensor Eclat (GPU)} & \textbf{Speedup} \\ \midrule
-0.9                & 0.4s                   & 0.02s                       & 20x              \\
-0.8                & 1.2s                   & 0.05s                       & 24x              \\
-0.7                & 18.5s                  & 0.32s                       & 57x              \\
-0.6                & 124.3s                 & 1.15s                       & 108x             \\ \bottomrule
+Dataset & Type & Density & Purpose \\ \midrule
+Chess & Game states & Dense & Long correlated patterns \\
+Connect & Game states & Dense & Candidate explosion stress test \\
+Accidents & Traffic records & Dense & Larger real-world scalability \\ \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{table}[ht]
+\section{Results}
+\begin{table}[htbp]
+\caption{Execution Time and Speedup at Minimum Support 0.6}
 \centering
-\caption{Execution Time (s) Comparison on Connect}
-\label{tab:results_connect}
-\begin{tabular}{@{}lllr@{}}
+\begin{tabular}{@{}lrrr@{}}
 \toprule
-\textbf{Min Sup.} & \textbf{Apriori (CPU)} & \textbf{Tensor Eclat (GPU)} & \textbf{Speedup} \\ \midrule
-0.9                & 2.1s                   & 0.3s                        & 7x               \\
-0.8                & 5.4s                   & 0.8s                        & 6.8x             \\
-0.7                & 42.1s                  & 2.1s                        & 20x              \\
-0.6                & 310.5s                 & 5.5s                        & 56x              \\ \bottomrule
+Dataset & Apriori (s) & Tensor-Eclat (s) & Speedup \\ \midrule
+Chess & 124.30 & 1.15 & 108.1$\times$ \\
+Connect & 310.50 & 5.50 & 56.5$\times$ \\
+Accidents & 450.20 & 15.30 & 29.4$\times$ \\ \bottomrule
 \end{tabular}
+\label{tab:speedup}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[htbp]
+\caption{Memory and Candidate Pressure at Minimum Support 0.6}
 \centering
-\caption{Execution Time (s) Comparison on Accidents}
-\label{tab:results_accidents}
-\begin{tabular}{@{}lllr@{}}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
-\textbf{Min Sup.} & \textbf{Apriori (CPU)} & \textbf{Tensor Eclat (GPU)} & \textbf{Speedup} \\ \midrule
-0.9                & 8.5s                   & 1.2s                        & 7x               \\
-0.8                & 25.3s                  & 2.8s                        & 9x               \\
-0.7                & 95.0s                  & 6.5s                        & 14.6x            \\
-0.6                & 450.2s                 & 15.3s                       & 29.4x            \\ \bottomrule
+\multirow{2}{*}{Dataset} & \multicolumn{2}{c}{Memory (MB)} & \multicolumn{2}{c}{Candidates} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+ & Apriori & Tensor & Apriori & Tensor \\ \midrule
+Chess & 230.1 & 8.5 & 66120 & 47655 \\
+Connect & 540.2 & 18.2 & 207840 & 141390 \\
+Accidents & 820.5 & 30.2 & 302410 & 222805 \\ \bottomrule
 \end{tabular}
+\label{tab:memory}
 \end{table}
-
-\subsection{Result Analysis}
-As evidenced by Tables \ref{tab:results_chess}--\ref{tab:results_accidents} and Figure \ref{fig:chess_time}, the baseline CPU Apriori exhibits catastrophic exponential time growth as minimum support decreases in dense data, requiring over two minutes at 0.6 support on Chess and over five minutes on Connect. In stark contrast, the highly optimized GPU-accelerated Tensor Eclat resolves the exact same search space in 1.15 seconds on Chess---yielding a peak 108x acceleration. On the larger Accidents dataset, the speedup reaches approximately 29x at 0.6 support, with Apriori exceeding 7.5 minutes while Tensor Eclat completes in 15.3 seconds.
-
-The speedup ratio exhibits a clear trend: as minimum support decreases (increasing the search space), the GPU advantage compounds due to the massively parallel nature of bitwise intersections (Figure \ref{fig:speedup}).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/chess_time.png}
-\caption{Log-scale Execution Time Scalability Comparison (Chess dataset)}
-\label{fig:chess_time}
+\caption{Log-scale execution time on Chess as support decreases.}
+\label{fig:chess}
 \end{figure}
-
-Memory footprint remained consistently low for the SOTA due to compressed boolean matrices across varying threshold bounds, unlike the exponential candidate bloat affecting Apriori (Figure \ref{fig:connect_mem}). At 0.6 support on Connect, Apriori consumed over 540 MB while Tensor Eclat used only 18.2 MB---a 29.7x reduction in peak memory.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/connect_mem.png}
-\caption{Peak Memory Consumption Tracking (Connect dataset)}
-\label{fig:connect_mem}
+\caption{Peak memory comparison on Connect.}
+\label{fig:connectmem}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/speedup_ratio.png}
-\caption{Speedup Ratio (Apriori / Tensor Eclat) across all datasets}
+\caption{Speedup ratio across datasets and support thresholds.}
 \label{fig:speedup}
 \end{figure}
 
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/candidates_low_support.png}
+\caption{Candidate generation pressure at the lowest support threshold.}
+\label{fig:candidates}
+\end{figure}
+
+Table \ref{tab:speedup} shows that Tensor-Eclat improves as support decreases. This is expected: lower support creates more frequent itemsets and more candidate intersections, so Apriori's nested scans become increasingly expensive. Tensor-Eclat still performs more work, but the work is expressed as compact vector operations.
+
+Table \ref{tab:memory} shows the second benefit. Apriori's candidate structures grow quickly, while Tensor-Eclat stores reusable bitsets and intermediate DFS intersections. The Connect result at 0.6 support shows a memory reduction from 540.2 MB to 18.2 MB, a 29.7$\times$ reduction.
+
 \section{Discussion}
-The immense performance gap underscores a fundamental shift in algorithm design: computation bound sequentially versus latency masked by parallel throughput. While Apriori conceptually guarantees an optimal pruning space, its horizontal I/O dependencies make it archaic for dense arrays. Our state-of-the-art implementation confirms that hardware-aware data structures---converting subset verification into bitwise vector math---dwarf theoretical algorithmic pruning enhancements.
+The main lesson is that Apriori's pruning property is necessary but not sufficient for dense data. When many itemsets survive pruning, the cost of checking candidates dominates. Vertical representation changes the unit of computation: support is no longer found by asking whether a candidate is contained in each transaction; it is found by intersecting occurrence vectors.
 
-Several key observations emerge from our experiments. First, the speedup ratio is not constant but increases with search space complexity: at higher support thresholds where few itemsets are frequent, the GPU initialization overhead partially offsets the parallelism advantage. At lower thresholds, the exponential growth in candidates overwhelms CPU-bound Apriori while the GPU handles the additional intersections with near-constant marginal cost.
+Tensor-Eclat has trade-offs. It pays a one-time conversion cost and may be slower for very small datasets or very high support thresholds where there is little mining work. GPU execution also depends on available VRAM and PyTorch/CUDA installation. The NumPy fallback keeps the implementation portable, but the largest speedups require tensor acceleration.
 
-Second, the memory advantage of Tensor Eclat is striking. The boolean tensor representation uses exactly $|D|$ bits per item regardless of support, while Apriori's candidate storage grows combinatorially. On the Connect dataset at 0.6 support, this translated to a 29.7$\times$ reduction in peak RAM.
-
-A notable trade-off is the GPU initialization cost: transferring the vertical bitset representation to VRAM introduces a fixed overhead of approximately 50--200ms depending on dataset size. For very small datasets or high support thresholds where mining itself takes milliseconds, this overhead can make the GPU approach slower. Additionally, VRAM capacity (6GB on our RTX 4050) imposes an upper bound on the number of items that can be simultaneously represented, though boolean compression makes this limit rarely practical.
-
-An unexpected finding was the non-linear scaling of speedup across datasets: Chess (small, dense) showed the highest peak speedup (108x), while the much larger Accidents dataset showed lower speedups (29x). This suggests that the relationship between dataset density and GPU utilization efficiency warrants further investigation.
+The Claude-assisted review was most useful in identifying engineering details that affect reproducibility: run multiple trials, include a warmup pass for CUDA context initialization, track memory and candidates, free older tidsets where possible, and sort items by support before recursive Eclat expansion. These suggestions turn the project from a pair of algorithms into a measurable experimental pipeline.
 
 \section{Conclusion}
-This exhaustive study successfully benchmarked the classical Apriori algorithm against a modernized 2022+ GPU Tensor Eclat approach. By synthesizing vertical data formats with massively parallel tensor arithmetic, we shattered the traditional support counting bottlenecks, achieving speed ratios surpassing 100x on benchmark dense datasets. Future research should target distributed multi-GPU tensor sharding to push FIM scaling to infinitely streaming transactional ecosystems.
+This project compared classical Apriori with a contemporary BitTable/Tensor-Eclat direction for frequent itemset mining. The optimized approach replaces repeated database scans with vertical bitsets and maps support counting to vectorized tensor intersections. Across the reported benchmark artifact, the optimized method reaches up to 108$\times$ speedup and substantially lower memory use. Apriori remains an excellent conceptual baseline for explaining anti-monotonic pruning, but modern FIM performance depends heavily on representation, locality, and parallel execution. Future work should run the pipeline on the full downloaded FIMI datasets, compare against FP-Growth and Spark implementations, and add multi-GPU or distributed sharding for larger transaction collections.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

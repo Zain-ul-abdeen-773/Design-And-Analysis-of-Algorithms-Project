@@ -1,32 +1,49 @@
 \relax 
 \citation{agrawal1994fast}
-\citation{vertical2018optimizations}
-\citation{sota2022tensor}
+\citation{kittipron2022bittable,albana2022hybrid,fernandezbasso2024spark}
 \citation{agrawal1994fast}
 \citation{zaki2000scalable}
-\citation{vertical2018optimizations,fimi2004goethals,memoryprof2021}
-\citation{sota2022tensor,gpu2023fim}
+\citation{han2000mining}
+\citation{kittipron2022bittable}
+\citation{albana2022hybrid}
+\citation{fernandezbasso2024spark}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {II}Literature Review}{1}{}\protected@file@percent }
-\citation{sota2022tensor}
-\@writefile{toc}{\contentsline {section}{\numberline {III}Algorithms: Description and Analysis}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Classical Apriori (Baseline)}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}State-of-the-Art (2022+): Tensor Eclat}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Proposed Optimization Strategies}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Optimization 1: Compressed Vertical Representation (Bitsets)}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Optimization 2: GPU-Accelerated Support Counting}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Experimental Setup and Results}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Environment}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Datasets}{2}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Execution Time (s) Comparison on Chess}}{2}{}\protected@file@percent }
-\newlabel{tab:results_chess}{{I}{2}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Result Analysis}{2}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Log-scale Execution Time Scalability Comparison (Chess dataset)}}{2}{}\protected@file@percent }
-\newlabel{fig:chess_time}{{1}{2}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {II}Team Contributions}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {III}Literature Review}{1}{}\protected@file@percent }
+\citation{fimi}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Algorithms}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Classical Apriori}{2}{}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Apriori Baseline}}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Tensor-Eclat}{2}{}\protected@file@percent }
+\@writefile{loa}{\contentsline {algorithm}{\numberline {2}{\ignorespaces Tensor-Eclat with Vertical Bitsets}}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Optimization Strategies}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Optimization 1: Vertical Tidsets and Bitsets}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Optimization 2: Parallel Tensor Support Counting}{2}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Experimental Setup}{3}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Dataset Characteristics Used in the Study}}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Results}{3}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Execution Time and Speedup at Minimum Support 0.6}}{3}{}\protected@file@percent }
+\newlabel{tab:speedup}{{II}{3}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {III}{\ignorespaces Memory and Candidate Pressure at Minimum Support 0.6}}{3}{}\protected@file@percent }
+\newlabel{tab:memory}{{III}{3}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Log-scale execution time on Chess as support decreases.}}{3}{}\protected@file@percent }
+\newlabel{fig:chess}{{1}{3}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Peak memory comparison on Connect.}}{3}{}\protected@file@percent }
+\newlabel{fig:connectmem}{{2}{3}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Speedup ratio across datasets and support thresholds.}}{3}{}\protected@file@percent }
+\newlabel{fig:speedup}{{3}{3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Discussion}{3}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Candidate generation pressure at the lowest support threshold.}}{3}{}\protected@file@percent }
+\newlabel{fig:candidates}{{4}{3}{}{}{}}
 \bibstyle{IEEEtran}
 \bibdata{references}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Peak Memory Consumption Tracking (Connect dataset)}}{3}{}\protected@file@percent }
-\newlabel{fig:connect_mem}{{2}{3}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Discussion}{3}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {VII}Conclusion}{3}{}\protected@file@percent }
-\gdef \@abspage@last{3}
+\bibcite{agrawal1994fast}{1}
+\bibcite{kittipron2022bittable}{2}
+\bibcite{albana2022hybrid}{3}
+\bibcite{fernandezbasso2024spark}{4}
+\bibcite{zaki2000scalable}{5}
+\bibcite{han2000mining}{6}
+\bibcite{fimi}{7}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Conclusion}{4}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{4}{}\protected@file@percent }
+\gdef \@abspage@last{4}
