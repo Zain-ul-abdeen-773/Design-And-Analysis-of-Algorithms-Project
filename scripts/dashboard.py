@@ -51,7 +51,7 @@ else:
         supports = ds_data['Min Support'].unique()
         for sup in supports:
             baseline = ds_data[(ds_data['Min Support'] == sup) & (ds_data['Algorithm'] == 'Apriori')]['Execution Time (s)'].values
-            sota = ds_data[(ds_data['Min Support'] == sup) & (ds_data['Algorithm'] == 'Tensor Eclat')]['Execution Time (s)'].values
+            sota = ds_data[(ds_data['Min Support'] == sup) & (ds_data['Algorithm'] == 'Optimized')]['Execution Time (s)'].values
             if len(baseline) > 0 and len(sota) > 0:
                 speedup = baseline[0] / sota[0]
                 speed_data.append({'Dataset': dataset, 'Min Support': sup, 'Speedup (x)': speedup})

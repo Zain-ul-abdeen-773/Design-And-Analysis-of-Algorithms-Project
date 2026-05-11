@@ -107,7 +107,7 @@ def main():
             # 2. SOTA GPU Tensor Eclat
             print(f"    Running Tensor Eclat ({NUM_RUNS} runs)...")
             metrics_eclat = run_experiment_averaged(TensorEclat, data, min_sup)
-            metrics_eclat.update({'Dataset': ds_name, 'Min Support': min_sup, 'Algorithm': 'Tensor Eclat'})
+            metrics_eclat.update({'Dataset': ds_name, 'Min Support': min_sup, 'Algorithm': 'Optimized'})
             results.append(metrics_eclat)
             print(f"      -> {metrics_eclat['Execution Time (s)']}s avg")
 
