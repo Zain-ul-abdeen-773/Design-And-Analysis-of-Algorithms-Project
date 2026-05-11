@@ -1,4 +1,4 @@
-# 🚀 CS-478: Frequent Itemset Mining (FIM) Optimization & GPU Acceleration
+# 🚀 CS-378: Frequent Itemset Mining (FIM) Optimization & GPU Acceleration
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B-red.svg)
