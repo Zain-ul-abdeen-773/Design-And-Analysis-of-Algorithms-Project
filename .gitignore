@@ -1,9 +1,3 @@
-ask_claude_opus_part2.py
-ask_claude_opus.py
-test_45_us.py
-test_45.py
-test_key.py
-claude_opus_45_results_part2.md
-claude_opus_45_results.md
-ask_claude_report_upgrade.py
-claude_report_upgrade.md
+__pycache__/
+*.pyc
+.env

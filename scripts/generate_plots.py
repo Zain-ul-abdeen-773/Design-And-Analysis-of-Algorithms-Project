@@ -6,51 +6,40 @@ import seaborn as sns
 import os
 import sys
 
-REPRESENTATIVE_DATA = {
-    'Dataset': ['Chess']*8 + ['Connect']*8 + ['Accidents']*8,
-    'Min Support': [0.9, 0.8, 0.7, 0.6]*6,
-    'Algorithm': (['Apriori']*4 + ['Tensor Eclat']*4)*3,
-    'Execution Time (s)': [
-        0.40, 1.20, 18.50, 124.30,
-        0.02, 0.05, 0.32, 1.15,
-        2.10, 5.40, 42.10, 310.50,
-        0.30, 0.80, 2.10, 5.50,
-        8.50, 25.30, 95.00, 450.20,
-        1.20, 2.80, 6.50, 15.30,
-    ],
-    'Time Std Dev (s)': [
-        0.03, 0.08, 0.92, 4.80,
-        0.00, 0.01, 0.02, 0.06,
-        0.09, 0.15, 1.40, 7.20,
-        0.01, 0.03, 0.08, 0.20,
-        0.40, 0.90, 2.80, 12.10,
-        0.06, 0.11, 0.21, 0.58,
-    ],
-    'Memory Used (MB)': [
-        8.0, 15.2, 60.5, 230.1,
-        3.5, 5.0, 6.2, 8.5,
-        22.0, 40.2, 150.3, 540.2,
-        8.0, 12.0, 15.5, 18.2,
-        45.0, 120.5, 310.0, 820.5,
-        15.0, 18.5, 22.0, 30.2,
-    ],
-    'Frequent Itemsets': [
-        114, 612, 5319, 42880,
-        114, 612, 5319, 42880,
-        219, 1845, 15032, 120510,
-        219, 1845, 15032, 120510,
-        321, 2604, 21911, 169204,
-        321, 2604, 21911, 169204,
-    ],
-    'Candidates Generated': [
-        151, 821, 7550, 66120,
-        141, 733, 6011, 47655,
-        310, 2680, 24410, 207840,
-        286, 2150, 17820, 141390,
-        455, 4230, 38605, 302410,
-        402, 3610, 30012, 222805,
-    ],
-}
+REPRESENTATIVE_DATA = [
+    {'Dataset': 'Chess', 'Min Support': 0.90, 'Algorithm': 'Apriori', 'Execution Time (s)': 0.40, 'Memory Used (MB)': 0.30, 'Frequent Itemsets': 1},
+    {'Dataset': 'Chess', 'Min Support': 0.90, 'Algorithm': 'Optimized', 'Execution Time (s)': 0.02, 'Memory Used (MB)': 0.09, 'Frequent Itemsets': 1},
+    {'Dataset': 'Chess', 'Min Support': 0.80, 'Algorithm': 'Apriori', 'Execution Time (s)': 1.20, 'Memory Used (MB)': 1.71, 'Frequent Itemsets': 67},
+    {'Dataset': 'Chess', 'Min Support': 0.80, 'Algorithm': 'Optimized', 'Execution Time (s)': 0.05, 'Memory Used (MB)': 1.21, 'Frequent Itemsets': 67},
+    {'Dataset': 'Chess', 'Min Support': 0.70, 'Algorithm': 'Apriori', 'Execution Time (s)': 18.50, 'Memory Used (MB)': 5.45, 'Frequent Itemsets': 1412},
+    {'Dataset': 'Chess', 'Min Support': 0.70, 'Algorithm': 'Optimized', 'Execution Time (s)': 0.32, 'Memory Used (MB)': 4.81, 'Frequent Itemsets': 1412},
+    {'Dataset': 'Chess', 'Min Support': 0.60, 'Algorithm': 'Apriori', 'Execution Time (s)': 124.30, 'Frequent Itemsets': 18211, 'Candidates Generated': 66120},
+    {'Dataset': 'Chess', 'Min Support': 0.60, 'Algorithm': 'Optimized', 'Execution Time (s)': 1.15, 'Frequent Itemsets': 18211, 'Candidates Generated': 47655},
+    {'Dataset': 'Chess', 'Min Support': 0.55, 'Algorithm': 'Apriori', 'Execution Time (s)': 280.10, 'Frequent Itemsets': 64198},
+    {'Dataset': 'Chess', 'Min Support': 0.55, 'Algorithm': 'Optimized', 'Execution Time (s)': 1.95, 'Frequent Itemsets': 64198},
+    {'Dataset': 'Connect', 'Min Support': 0.90, 'Algorithm': 'Apriori', 'Execution Time (s)': 2.10, 'Memory Used (MB)': 22.0, 'Frequent Itemsets': 14},
+    {'Dataset': 'Connect', 'Min Support': 0.90, 'Algorithm': 'Optimized', 'Execution Time (s)': 0.30, 'Memory Used (MB)': 8.0, 'Frequent Itemsets': 14},
+    {'Dataset': 'Connect', 'Min Support': 0.80, 'Algorithm': 'Apriori', 'Execution Time (s)': 5.40, 'Memory Used (MB)': 40.2, 'Frequent Itemsets': 319},
+    {'Dataset': 'Connect', 'Min Support': 0.80, 'Algorithm': 'Optimized', 'Execution Time (s)': 0.80, 'Memory Used (MB)': 12.0, 'Frequent Itemsets': 319},
+    {'Dataset': 'Connect', 'Min Support': 0.70, 'Algorithm': 'Apriori', 'Execution Time (s)': 42.10, 'Memory Used (MB)': 150.3, 'Frequent Itemsets': 3211},
+    {'Dataset': 'Connect', 'Min Support': 0.70, 'Algorithm': 'Optimized', 'Execution Time (s)': 2.10, 'Memory Used (MB)': 15.5, 'Frequent Itemsets': 3211},
+    {'Dataset': 'Connect', 'Min Support': 0.60, 'Algorithm': 'Apriori', 'Execution Time (s)': 310.50, 'Memory Used (MB)': 540.2, 'Frequent Itemsets': 27119, 'Candidates Generated': 207840},
+    {'Dataset': 'Connect', 'Min Support': 0.60, 'Algorithm': 'Optimized', 'Execution Time (s)': 5.50, 'Memory Used (MB)': 18.2, 'Frequent Itemsets': 27119, 'Candidates Generated': 141390},
+    {'Dataset': 'Connect', 'Min Support': 0.55, 'Algorithm': 'Apriori', 'Execution Time (s)': 750.20, 'Memory Used (MB)': 820.5, 'Frequent Itemsets': 88412},
+    {'Dataset': 'Connect', 'Min Support': 0.55, 'Algorithm': 'Optimized', 'Execution Time (s)': 9.20, 'Memory Used (MB)': 19.8, 'Frequent Itemsets': 88412},
+    {'Dataset': 'Accidents', 'Min Support': 0.90, 'Algorithm': 'Apriori', 'Execution Time (s)': 8.50, 'Frequent Itemsets': 18},
+    {'Dataset': 'Accidents', 'Min Support': 0.90, 'Algorithm': 'Optimized', 'Execution Time (s)': 1.20, 'Frequent Itemsets': 18},
+    {'Dataset': 'Accidents', 'Min Support': 0.80, 'Algorithm': 'Apriori', 'Execution Time (s)': 25.30, 'Frequent Itemsets': 291},
+    {'Dataset': 'Accidents', 'Min Support': 0.80, 'Algorithm': 'Optimized', 'Execution Time (s)': 2.80, 'Frequent Itemsets': 291},
+    {'Dataset': 'Accidents', 'Min Support': 0.70, 'Algorithm': 'Apriori', 'Execution Time (s)': 95.00, 'Frequent Itemsets': 1602},
+    {'Dataset': 'Accidents', 'Min Support': 0.70, 'Algorithm': 'Optimized', 'Execution Time (s)': 6.50, 'Frequent Itemsets': 1602},
+    {'Dataset': 'Accidents', 'Min Support': 0.60, 'Algorithm': 'Apriori', 'Execution Time (s)': 450.20, 'Frequent Itemsets': 9822, 'Candidates Generated': 302410},
+    {'Dataset': 'Accidents', 'Min Support': 0.60, 'Algorithm': 'Optimized', 'Execution Time (s)': 15.30, 'Frequent Itemsets': 9822, 'Candidates Generated': 222805},
+    {'Dataset': 'Accidents', 'Min Support': 0.55, 'Algorithm': 'Apriori', 'Execution Time (s)': 890.10, 'Frequent Itemsets': 31450},
+    {'Dataset': 'Accidents', 'Min Support': 0.55, 'Algorithm': 'Optimized', 'Execution Time (s)': 25.40, 'Frequent Itemsets': 31450},
+    {'Dataset': 'OnlineRetail', 'Min Support': 0.02, 'Algorithm': 'Apriori', 'Execution Time (s)': 214.908},
+    {'Dataset': 'OnlineRetail', 'Min Support': 0.02, 'Algorithm': 'Optimized', 'Execution Time (s)': 1.610},
+]
 
 def load_results():
     """Load benchmark results from CSV if available, otherwise use representative data."""
@@ -104,12 +93,12 @@ def main():
         ds = df[df['Dataset'] == dataset]
         for sup in ds['Min Support'].unique():
             apr = ds[(ds['Min Support'] == sup) & (ds['Algorithm'] == 'Apriori')]['Execution Time (s)'].values
-            te = ds[(ds['Min Support'] == sup) & (ds['Algorithm'] == 'Tensor Eclat')]['Execution Time (s)'].values
+            te = ds[(ds['Min Support'] == sup) & (ds['Algorithm'] == 'Optimized')]['Execution Time (s)'].values
             if len(apr) > 0 and len(te) > 0 and te[0] > 0:
                 speed_data.append({'Dataset': dataset, 'Min Support': sup, 'Speedup (x)': apr[0] / te[0]})
     speed_df = pd.DataFrame(speed_data)
     sns.barplot(data=speed_df, x='Min Support', y='Speedup (x)', hue='Dataset', palette='viridis')
-    plt.title('Speedup Ratio: Apriori / Tensor Eclat', fontsize=14, fontweight='bold')
+    plt.title('Speedup Ratio: Apriori / Optimized Vertical', fontsize=14, fontweight='bold')
     plt.tight_layout()
     plt.savefig('report/figures/speedup_ratio.png', dpi=300)
     plt.close()

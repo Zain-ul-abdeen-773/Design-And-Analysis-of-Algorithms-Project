@@ -1,8 +1,14 @@
 import time
 import os
+import sys
 import psutil
 import numpy as np
 import gc
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from src.algorithms.apriori import AprioriBaseline
 from src.algorithms.tensor_eclat import TensorEclat
 import pandas as pd
